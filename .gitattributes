@@ -1,0 +1,4 @@
+# Els fitxers es guarden amb finals de línia LF dins del repositori, que és com
+# els escriu Claude. Sense això, cada sincronització omple el terminal d'avisos
+# de CRLF i els diffs surten tocats sencers.
+* text=auto eol=lf

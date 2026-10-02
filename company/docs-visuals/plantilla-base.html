@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Títol del document</title>
+<!-- Marca que el JS s'executa de debò. Va al <head> perquè la classe hi sigui
+     abans del primer pintat i no es vegi el contingut abans d'amagar-se. Si
+     aquest script no corre, res no s'amaga mai: el document es veu sencer. -->
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* ---------- Tokens. Canvia --accent pel color del client. ---------- */
+:root {
+  --paper: #faf8f5;
+  --ink: #1a1a1a;
+  --ink-60: color-mix(in srgb, var(--ink) 60%, transparent);
+  --ink-30: color-mix(in srgb, var(--ink) 30%, transparent);
+  --rule: color-mix(in srgb, var(--ink) 12%, transparent);
+  --accent: #b4451f;
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--paper));
+
+  --font-text: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --font-titol: "Inter", "Segoe UI Variable Display", "Segoe UI", -apple-system, sans-serif;
+  --font-codi: "Cascadia Code", "SF Mono", Consolas, monospace;
+
+  --s1: .5rem; --s2: 1rem; --s3: 1.5rem; --s4: 2.5rem; --s5: 4rem; --s6: 6.5rem;
+  --easing: cubic-bezier(.2,.7,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1.125rem/1.65 var(--font-text);   /* 18 px — no baixar d'aquí */
+  font-synthesis-weight: none;
+}
+
+/* ---------- Graella: text estret, elements amples que en surten ---------- */
+.doc {
+  --mesura: 34rem;      /* ~68 caràcters */
+  --ample: 62rem;
+  display: grid;
+  /* Els noms han d'acabar en -start/-end: és l'única forma que `grid-column: text`
+     i `grid-column: ample` resolguin sols. Amb noms en català no funciona. */
+  grid-template-columns:
+    [ample-start] minmax(var(--s2), 1fr)
+    [text-start] minmax(0, var(--mesura))
+    [text-end] minmax(var(--s2), 1fr) [ample-end];
+  padding: var(--s6) 0;
+}
+.doc > * { grid-column: text; }
+.ample { grid-column: ample; max-width: var(--ample); justify-self: center; width: 100%; }
+
+/* ---------- Tipografia ---------- */
+h1, h2, h3 { font-family: var(--font-titol); line-height: 1.1; letter-spacing: -.02em; font-weight: 620; }
+h1 { font-size: clamp(2.2rem, 6vw, 2.986rem); margin: 0 0 var(--s3); }
+h2 { font-size: clamp(1.6rem, 4vw, 2.074rem); margin: var(--s6) 0 var(--s2); }
+h3 { font-size: 1.44rem; margin: var(--s4) 0 var(--s1); }
+h2 + p, h3 + p { margin-top: 0; }
+p { margin: 0 0 var(--s2); text-wrap: pretty; }
+.entradeta { font-size: 1.2rem; color: var(--ink-60); margin-bottom: var(--s5); }
+a { color: var(--accent); text-underline-offset: .18em; }
+strong { font-weight: 640; }
+code { font: .9em var(--font-codi); background: var(--accent-soft); padding: .1em .35em; border-radius: 3px; }
+
+/* ---------- Peces ---------- */
+.xifra { font-family: var(--font-titol); font-size: 3.4rem; line-height: 1; font-weight: 640; color: var(--accent); }
+.xifra + p { color: var(--ink-60); }
+
+figure { margin: var(--s4) 0; }
+figcaption { font-size: .875rem; color: var(--ink-60); margin-top: var(--s1); }
+.diagrama { overflow-x: auto; }         /* mai desplaçar la pàgina sencera */
+.diagrama svg { display: block; width: 100%; height: auto; min-width: 30rem; }
+
+table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--font-titol); font-size: .875rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-60); }
+
+hr { border: 0; border-top: 1px solid var(--rule); margin: var(--s6) 0; }
+
+/* ---------- Moviment ----------
+   TOT ES VEU PER DEFECTE. El moviment només s'activa si l'script del <head> ha
+   pogut marcar l'arrel amb .js — per això les regles que amaguen van totes
+   prefixades. Allà on el JS no s'executi (instantània estàtica d'un panell,
+   CSP, client de correu, error abans de l'observer) el document surt sencer.
+
+   NO ho facis a l'inrevés amb @media (scripting: none): aquesta consulta només
+   respon quan el navegador diu que NO admet scripts. Un entorn que admet
+   scripts però no els executa —el cas del panell del navegador— no la dispara,
+   i el document queda EN BLANC. Comprovat el 2026-07-30. */
+.js [data-reveal] { opacity: 0; transform: translateY(14px); }
+.js [data-reveal].vist { opacity: 1; transform: none; transition: opacity .55s var(--easing), transform .55s var(--easing); }
+
+/* Traç que es dibuixa: posa .trac als <path> del diagrama */
+.js .trac { stroke-dasharray: var(--len, 1000); stroke-dashoffset: var(--len, 1000); }
+.js [data-reveal].vist .trac { animation: dibuixa .9s var(--easing) forwards; }
+@keyframes dibuixa { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+  .js .trac { stroke-dashoffset: 0; }
+}
+
+/* ---------- Impressió: d'aquí en surt el PDF ---------- */
+@media print {
+  :root { --paper: #fff; }
+  @page { size: A4; margin: 18mm 16mm; }
+  body { font-size: 11pt; }
+  .doc { padding: 0; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .trac { stroke-dashoffset: 0 !important; }
+  h1, h2, h3 { break-after: avoid; }
+  figure, table, .diagrama { break-inside: avoid; }
+  .diagrama svg { min-width: 0; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75em; color: #555; }
+  .nomes-pantalla { display: none; }
+}
+</style>
+</head>
+<body>
+
+<main class="doc">
+
+  <h1 data-reveal>Títol que diu la idea, no el tema</h1>
+  <p class="entradeta" data-reveal>Una línia que digui a qui va dirigit i què se n'endurà.</p>
+
+  <h2 data-reveal>Secció</h2>
+  <p data-reveal>Cos a 18 px, amplada de lectura limitada.</p>
+
+  <figure class="ample diagrama" data-reveal>
+    <svg viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+         font-family="Inter, Segoe UI, sans-serif" font-size="15">
+      <path class="trac" style="--len:520" d="M120 100 H300 M420 100 H600"
+            stroke="currentColor" stroke-width="2" opacity=".45"/>
+      <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2">
+        <rect x="20" y="70" width="100" height="60" rx="8"/>
+        <rect x="300" y="70" width="120" height="60" rx="8"/>
+        <rect x="600" y="70" width="120" height="60" rx="8"/>
+      </g>
+      <g fill="currentColor" text-anchor="middle">
+        <text x="70" y="105">Entrada</text>
+        <text x="360" y="105">Procés</text>
+        <text x="660" y="105">Resultat</text>
+      </g>
+    </svg>
+    <figcaption>Etiqueta directament sobre les formes; si cal llegenda, està mal fet.</figcaption>
+  </figure>
+
+</main>
+
+<script>
+// Entrada esglaonada, una sola vegada per element.
+const obs = new IntersectionObserver((entrades) => {
+  entrades.filter(e => e.isIntersecting).forEach((e, i) => {
+    setTimeout(() => e.target.classList.add('vist'), i * 70);
+    obs.unobserve(e.target);
+  });
+}, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+
+// Xarxa de seguretat per l'altra banda: si el JS SÍ que corre però l'observer no dispara
+// mai (pestanya amagada a 0 fps, per exemple), sense això el document quedaria amagat per
+// sempre. Passats 4 s, el que no s'hagi revelat es revela igualment.
+setTimeout(() => {
+  document.querySelectorAll('[data-reveal]:not(.vist)').forEach(el => el.classList.add('vist'));
+}, 4000);
+
+// Llargada real de cada traç, perquè l'animació no depengui d'un número inventat.
+document.querySelectorAll('.trac').forEach(p => {
+  if (p.getTotalLength) p.style.setProperty('--len', Math.ceil(p.getTotalLength()));
+});
+</script>
+</body>
+</html>
