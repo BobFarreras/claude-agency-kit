@@ -123,10 +123,23 @@ if ($falten.Count -gt 0) {
 }
 
 Write-Host ""
-Write-Host "Dues dependencies NO son en aquest kit i s'instal·len del seu origen:" -ForegroundColor Cyan
-Write-Host "  hyperframes (motion graphics)  i  media-use (materials)"
-Write-Host "Sense elles, /reel i /video-ia no funcionen."
+# --- Les dependencies de tercers, que no son aqui --------------------------
+Write-Host ""
+Write-Host "Dependencies de tercers (no son en aquest kit):" -ForegroundColor Cyan
+
+$sk = Join-Path $ClaudeHome 'skills'
+$tercers = @(
+  [pscustomobject]@{ Cal = 'hyperframes';  Trobat = (Test-Path (Join-Path $sk 'hyperframes'));  Per = 'motion graphics i render' }
+  [pscustomobject]@{ Cal = 'media-use';    Trobat = (Test-Path (Join-Path $sk 'media-use'));    Per = 'logos, imatges, veu i musica' }
+  [pscustomobject]@{ Cal = 'forja-reel';   Trobat = (Test-Path (Join-Path $sk 'forja-reelssets\motor-scripts\cut.py')); Per = 'tall, subtitols, lint i QC: /reel i /video-ia criden els seus scripts' }
+)
+$tercers | Format-Table -AutoSize
+
+if (@($tercers | Where-Object { -not $_.Trobat }).Count -gt 0) {
+  Write-Host "Sense les marcades com a False, /reel i /video-ia NO funcionen." -ForegroundColor Yellow
+  Write-Host "Es passen a ma: descomprimeix-les a $sk"
+}
+
 Write-Host ""
 Write-Host "La GROQ_API_KEY es posa per la finestra de variables d'entorn de Windows," -ForegroundColor Cyan
 Write-Host "mai pel terminal: tot el que passa pel terminal acaba en una captura."
-

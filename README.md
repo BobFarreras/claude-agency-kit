@@ -31,6 +31,9 @@ cd claude-agency-kit
 .\install.ps1 -Apply   # ho instal·la a ~/.claude
 ```
 
+Si qui fa la instal·lació és un agent, té les instruccions a
+[AGENTS.md](AGENTS.md) — ordre dels passos, com verificar-ho i què no ha de fer.
+
 `-Apply` sobreescriu `CLAUDE.md`, `agents/`, `company/` i aquestes skills de `~/.claude`, i
 **abans en fa una còpia** a `~/.claude/backups/install-<data>/`. No toca `settings.json` ni res
 local.
@@ -40,8 +43,13 @@ variable `GROQ_API_KEY`. Sense això les skills de vídeo no funcionen.
 
 ### Dependències que no són aquí
 
-- **Hyperframes** i **media-use**, el motor de motion graphics i el de materials. Les skills
-  `/reel` i `/video-ia` les necessiten. S'instal·len del seu origen.
+`/reel` i `/video-ia` necessiten tres skills de tercers que no es publiquen en aquest
+repositori. `install.ps1` comprova si hi són i t'ho diu:
+
+- **`hyperframes*`** — el motor de motion graphics i de render.
+- **`media-use`** — la resolució de materials (logos, imatges, veu, música).
+- **`forja-reel`** — el motor de tall, subtítols, lint de timeline i QC. Les dues skills criden
+  els seus scripts (`assets/motor-scripts/`) a cada pas, així que sense ell no arrenquen.
 - **`GROQ_API_KEY`** com a variable d'entorn de l'usuari, per transcriure. Posa-la per la
   finestra de variables d'entorn de Windows, **no pel terminal**: tot el que passa pel terminal
   acaba en una captura o en un xat.
