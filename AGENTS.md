@@ -57,14 +57,14 @@ d'usuari → Nova → `GROQ_API_KEY`) i que reinicïi Claude Desktop. Comprova-h
 
 Ha de dir `True`.
 
-**6. Tres dependències no són en aquest repositori**, i sense elles `/reel` i `/video-ia` **no
-funcionen**:
+**6. Dues dependències no són en aquest repositori**, i sense elles `/reel` i `/video-ia` **no
+funcionen**. El tercer motor, `forja-reel`, **sí que hi és** i s'instal·la amb la resta —
+`install.ps1` el comprova igualment, perquè és el que criden les dues skills a cada pas.
 
 | Falta | Què és |
 | --- | --- |
 | `hyperframes`, `hyperframes-*` | El motor de motion graphics i de render |
 | `media-use` | La resolució de materials (logos, imatges, veu, música) |
-| `forja-reel` | El motor de tall i de QC. `/reel` i `/video-ia` criden els seus scripts de `~/.claude/skills/forja-reel/assets/motor-scripts/` a cada pas |
 
 Són de tercers i no es publiquen aquí. **Demana-les a la persona** —les porta en un zip— i
 descomprimeix-les a `~/.claude/skills/`. No les busquis per internet ni te les reescriguis: els

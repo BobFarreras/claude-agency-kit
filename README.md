@@ -43,13 +43,14 @@ variable `GROQ_API_KEY`. Sense això les skills de vídeo no funcionen.
 
 ### Dependències que no són aquí
 
-`/reel` i `/video-ia` necessiten tres skills de tercers que no es publiquen en aquest
-repositori. `install.ps1` comprova si hi són i t'ho diu:
+`/reel` i `/video-ia` necessiten skills de tercers. `install.ps1` comprova si hi són i t'ho diu:
 
-- **`hyperframes*`** — el motor de motion graphics i de render.
-- **`media-use`** — la resolució de materials (logos, imatges, veu, música).
-- **`forja-reel`** — el motor de tall, subtítols, lint de timeline i QC. Les dues skills criden
-  els seus scripts (`assets/motor-scripts/`) a cada pas, així que sense ell no arrenquen.
+- **`forja-reel` i `forja-reel-engine`** — el motor de tall, subtítols, lint de timeline i QC.
+  Les dues skills criden els seus scripts (`assets/motor-scripts/`) a cada pas. **Són aquí**,
+  però no són nostres: llegeix [TERCERS.md](TERCERS.md).
+- **`hyperframes*`** — el motor de motion graphics i de render. **No és aquí**, s'instal·la del
+  seu origen.
+- **`media-use`** — la resolució de materials (logos, imatges, veu, música). **No és aquí.**
 - **`GROQ_API_KEY`** com a variable d'entorn de l'usuari, per transcriure. Posa-la per la
   finestra de variables d'entorn de Windows, **no pel terminal**: tot el que passa pel terminal
   acaba en una captura o en un xat.
@@ -80,4 +81,8 @@ correus al que ha copiat i s'atura si en troba.
 
 ## Llicència
 
-MIT. Fes-ne el que vulguis; si et serveix, tant millor.
+MIT per als nostres fitxers: `CLAUDE.md`, `agents/`, `company/` i les dotze skills nostres.
+Fes-ne el que vulguis; si et serveix, tant millor.
+
+`skills/forja-reel/` i `skills/forja-reel-engine/` són de tercers i **no les cobreix**:
+[TERCERS.md](TERCERS.md) explica què sabem i què no.
